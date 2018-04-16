@@ -26,14 +26,17 @@ class DNS_Server:
     def run(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.bind(('', 53))
+            sock.settimeout(2)
 
             while True:
                 try:
                     query, addr = sock.recvfrom(1024)
                     answer = self.get_answer(query)
                     sock.sendto(answer, addr)
+                except socket.timeout:
+                    continue
                 except Exception as e:
-                    raise
+                    print(e)
 
     def get_answer(self, query):
         message = DNS_Message(query)
