@@ -31,6 +31,7 @@ class DNS_Message:
             offset = new_offset + 4
         for i in range(self.ancount + self.nscount + self.arcount):
 <<<<<<< HEAD
+<<<<<<< HEAD
             parsed_name, offset = self.parse_name(message, offset)
             type, cls, ttl, length = struct.unpack_from('!HHIH', message, offset)
             offset += 10
@@ -39,6 +40,18 @@ class DNS_Message:
                                                           length, message[offset:offset+length]))
             if type == 2:
                 self.ns_answers[parsed_name].append(Record(b'\xc0\x0c', type, cls, int(time.time()) + ttl,
+=======
+            parsed_name, new_offset = self.parse_name(message, offset)
+            raw_name = message[offset:new_offset]
+            offset = new_offset
+            type, cls, ttl, length = struct.unpack_from('!HHIH', message, offset)
+            offset += 10
+            if type == 1:
+                self.a_answers[parsed_name].append(Record(raw_name, type, cls, int(time.time()) + ttl,
+                                                          length, message[offset:offset+length]))
+            if type == 2:
+                self.ns_answers[parsed_name].append(Record(raw_name, type, cls, int(time.time()) + ttl,
+>>>>>>> bbefec25851cc30dfdfcc684d6ef2cba8ec807c4
 =======
             parsed_name, new_offset = self.parse_name(message, offset)
             raw_name = message[offset:new_offset]
