@@ -33,7 +33,7 @@ class DNS_Server:
                     answer = self.get_answer(query)
                     sock.sendto(answer, addr)
                 except Exception as e:
-                    print(e)
+                    raise
 
     def get_answer(self, query):
         message = DNS_Message(query)
@@ -41,7 +41,7 @@ class DNS_Server:
         for q in message.queries:
             if q.type in self.cache and q.name in self.cache[q.type]:
                 answ_list = self.cache[q.type][q.name]
-                if answ_list[0][1] > int(time.time()):
+                if answ_list[0].del_time > int(time.time()):
                     answer = message.pack_answer(q, answ_list)
                     print('Answer from cache')
                 else:
@@ -50,9 +50,9 @@ class DNS_Server:
                 answer = self.ask_forwarder(query)
                 parsed_answer = DNS_Message(answer)
                 if parsed_answer.a_answers:
-                    self.cache[1][q.name] = parsed_answer.a_answers
+                    self.cache[1].update(parsed_answer.a_answers)
                 if parsed_answer.ns_answers:
-                    self.cache[2][q.name] = parsed_answer.ns_answers
+                    self.cache[2].update(parsed_answer.ns_answers)
         return answer
 
     def ask_forwarder(self, query):

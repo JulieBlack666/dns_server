@@ -1,14 +1,17 @@
 import struct
 
+import time
+
 
 class Record:
-    def __init__(self, raw_name, type, cls, ttl, data_length, data):
+    def __init__(self, raw_name, type, cls, del_time, data_length, data):
         self.raw_name = raw_name
         self.type = type
         self.cls = cls
-        self.ttl = ttl
+        self.del_time = del_time
         self.data_length = data_length
         self.raw_data = data
 
     def pack(self):
-        return self.raw_name + struct.pack('!HHIH', self.type, self.cls, self.ttl, self.data_length) + self.raw_data
+        return self.raw_name + struct.pack('!HHIH', self.type, self.cls, self.del_time - int(time.time()),
+                                           self.data_length) + self.raw_data
