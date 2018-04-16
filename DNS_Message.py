@@ -40,6 +40,18 @@ class DNS_Message:
                                                           length, message[offset:offset+length]))
             if type == 2:
                 self.ns_answers[parsed_name].append(Record(name, type, cls, int(time.time()) + ttl,
+=======
+            parsed_name, new_offset = self.parse_name(message, offset)
+            raw_name = message[offset:new_offset]
+            offset = new_offset
+            type, cls, ttl, length = struct.unpack_from('!HHIH', message, offset)
+            offset += 10
+            if type == 1:
+                self.a_answers[parsed_name].append(Record(raw_name, type, cls, int(time.time()) + ttl,
+                                                          length, message[offset:offset+length]))
+            if type == 2:
+                self.ns_answers[parsed_name].append(Record(raw_name, type, cls, int(time.time()) + ttl,
+>>>>>>> bbefec25851cc30dfdfcc684d6ef2cba8ec807c4
                                                            length, message[offset:offset+length]))
             offset += length
 
