@@ -30,16 +30,16 @@ class DNS_Message:
             self.queries.append(Query(name, type, cls, message[offset:new_offset]))
             offset = new_offset + 4
         for i in range(self.ancount + self.nscount + self.arcount):
-            name = message[offset:offset+2]
-            parsed_name, _ = self.parse_name(message, offset)
-            offset += 2
+            parsed_name, new_offset = self.parse_name(message, offset)
+            raw_name = message[offset:new_offset]
+            offset = new_offset
             type, cls, ttl, length = struct.unpack_from('!HHIH', message, offset)
             offset += 10
             if type == 1:
-                self.a_answers[parsed_name].append(Record(name, type, cls, int(time.time()) + ttl,
+                self.a_answers[parsed_name].append(Record(raw_name, type, cls, int(time.time()) + ttl,
                                                           length, message[offset:offset+length]))
             if type == 2:
-                self.ns_answers[parsed_name].append(Record(name, type, cls, int(time.time()) + ttl,
+                self.ns_answers[parsed_name].append(Record(raw_name, type, cls, int(time.time()) + ttl,
                                                            length, message[offset:offset+length]))
             offset += length
 
