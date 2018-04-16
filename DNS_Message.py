@@ -38,6 +38,7 @@ class DNS_Message:
                                                           length, message[offset:offset+length]))
             if type == 2:
                 self.ns_answers[parsed_name].append(Record(b'\xc0\x0c', type, cls, int(time.time()) + ttl,
+                                                           length, message[offset:offset+length]))
             offset += length
 
     def parse_name(self, bytes, offset):
