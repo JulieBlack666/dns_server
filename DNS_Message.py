@@ -33,13 +33,17 @@ class DNS_Message:
             name = message[offset:offset+2]
             parsed_name, _ = self.parse_name(message, offset)
             offset += 2
+<<<<<<< HEAD
+            parsed_name, offset = self.parse_name(message, offset)
             type, cls, ttl, length = struct.unpack_from('!HHIH', message, offset)
             offset += 10
             if type == 1:
                 self.a_answers[parsed_name].append(Record(name, type, cls, int(time.time()) + ttl,
+                self.a_answers[parsed_name].append(Record(b'\xc0\x0c', type, cls, int(time.time()) + ttl,
                                                           length, message[offset:offset+length]))
             if type == 2:
                 self.ns_answers[parsed_name].append(Record(name, type, cls, int(time.time()) + ttl,
+                self.ns_answers[parsed_name].append(Record(b'\xc0\x0c', type, cls, int(time.time()) + ttl,
 =======
             parsed_name, new_offset = self.parse_name(message, offset)
             raw_name = message[offset:new_offset]
